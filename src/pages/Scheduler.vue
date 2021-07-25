@@ -165,7 +165,7 @@ export default defineComponent ({
       this.navigation = [
         { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: false },
         { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: false },
-        { name: 'Appointments', href: '/admin//appointments', icon: CalendarIcon, current: true },
+        { name: 'Appointments', href: '/admin/appointments', icon: CalendarIcon, current: true },
       ]
     }
     else if (this.$route.name === "Doctors") {
