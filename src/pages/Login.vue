@@ -63,10 +63,10 @@ import axios from 'axios';
 export default defineComponent({  
   data() {
     return {
-      email: "",
-      password: "",
-      loginURL: process.env["VUE_APP_URL"] + "/token",
-      loginError: false
+        email: "",
+        password: "",
+        loginURL: process.env["VUE_APP_URL"] + "/token",
+        loginError: false
     }
   },
   methods: {
@@ -84,7 +84,7 @@ export default defineComponent({
       })
       .then(response => {
           localStorage.setItem('AccessToken', JSON.stringify(response.data));
-          this.$router.push('/')
+          this.$router.push('/admin/')
       })
       .catch(error => {
           console.log(error);
