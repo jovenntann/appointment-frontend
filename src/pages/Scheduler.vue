@@ -146,9 +146,9 @@ export default defineComponent ({
   setup() {
     const state = reactive({
       navigation: [
-        { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
-        { name: 'Doctors', href: '/doctors', icon: UsersIcon, current: false },
-        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false },
+        { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: true },
+        { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: false },
+        { name: 'Appointments', href: '/admin/appointments', icon: CalendarIcon, current: false },
       ],
       userNavigation: [
         { name: 'Your Profile', href: '#' },
@@ -163,16 +163,16 @@ export default defineComponent ({
   mounted() {
     if (this.$route.name === "Appointments") {
       this.navigation = [
-        { name: 'Dashboard', href: '/', icon: HomeIcon, current: false },
-        { name: 'Doctors', href: '/doctors', icon: UsersIcon, current: false },
-        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: true },
+        { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: false },
+        { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: false },
+        { name: 'Appointments', href: '/admin//appointments', icon: CalendarIcon, current: true },
       ]
     }
     else if (this.$route.name === "Doctors") {
       this.navigation = [
-        { name: 'Dashboard', href: '/', icon: HomeIcon, current: false },
-        { name: 'Doctors', href: '/doctors', icon: UsersIcon, current: true },
-        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false },
+        { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: false },
+        { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: true },
+        { name: 'Appointments', href: '/admin/appointments', icon: CalendarIcon, current: false },
       ]
     }
   }

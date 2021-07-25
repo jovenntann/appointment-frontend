@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Lists from '@/components/Dashboard/Appointments/Lists.vue';
+import Lists from '@/components/Scheduler/Appointments/Lists.vue';
 
 export default defineComponent({
   name: 'Appointments',

@@ -17,8 +17,8 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue';
-import Stats from '@/components/Dashboard/Home/Stats.vue';
-import Header from '@/components/Dashboard/Home/Header.vue';
+import Stats from '@/components/Scheduler/Home/Stats.vue';
+import Header from '@/components/Scheduler/Home/Header.vue';
 export default defineComponent({
   name: 'Home',
   components: {
