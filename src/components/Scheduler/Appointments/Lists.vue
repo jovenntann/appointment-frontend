@@ -48,14 +48,29 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ appointment.appointment.comments }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+
+                <td v-if="appointment.user" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ appointment.user.first_name }} {{ appointment.user.last_name }}
                 </td>
+                <td v-else class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <i>Not Assigned</i>
+                </td>
+
+
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  <span v-if="appointment.appointment_status.name == 'Pending'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                    {{ appointment.appointment_status.name }}
+                  </span>
+                  <span v-if="appointment.appointment_status.name == 'Approved'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    {{ appointment.appointment_status.name }}
+                  </span>
+                  <span v-if="appointment.appointment_status.name == 'Declined'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                     {{ appointment.appointment_status.name }}
                   </span>
                 </td>
+
+
+
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                 </td>
