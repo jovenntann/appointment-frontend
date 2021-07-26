@@ -211,7 +211,13 @@ export default defineComponent({
       },
       // Date Picker
         disabledDate(time: any) {
-          return time.getDay() == 0
+          const currentDate = new Date()
+          const adjustedCurrentDate = currentDate.setDate(currentDate.getDate() - 1);
+          if (time.getDay() == 0) {
+            return true
+          } else if (time < adjustedCurrentDate) {
+            return true
+          }
         },
         shortcuts: [{
           text: 'Today',
