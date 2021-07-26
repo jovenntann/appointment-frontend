@@ -3,7 +3,6 @@
     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-          {{ appointment }}
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
@@ -84,38 +83,13 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent } from 'vue';
 
 export default defineComponent ({
-  data() {
-    return {
-      appointments: [],
-      apiURL: process.env["VUE_APP_URL"],
-    }
+  props: {
+    appointments: [Array, Object],
   },
-  mounted() {
-    this.getAppointments();
-  },
-  methods: {
-    getAppointments() {
-      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
-      axios.defaults.headers.common = {
-        'Authorization': 'Bearer ' + accessToken.access_token,
-        'Access-Control-Allow-Origin': true
-      };
-      axios({
-          method: 'get',
-          url: this.apiURL + '/appointments'
-      })
-      .then(response => {
-        console.log(response.data)
-        this.appointments = response.data
-      })
-      .catch(error => {
-          console.log(error);
-      });
-    }
-  }
 })
+
+
 </script>

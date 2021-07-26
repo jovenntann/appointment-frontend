@@ -1,5 +1,5 @@
 <template>
-  <SideOver :is-open="isOpen" @parentUpdateIsOpen="updateIsOpen($event)"></SideOver>
+  <SideOver :is-open="isOpen" @parentUpdateIsOpen="updateIsOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOver>
   <main class="flex-1 relative overflow-y-auto focus:outline-none">
     <div class="py-6">
       
@@ -10,7 +10,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <!-- Replace with your content -->
         <div class="py-4">
-          <Lists/>
+          <Lists :appointments="appointments"></Lists>
         </div>
         <!-- /End replace -->
       </div>
@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios';
 import { defineComponent } from 'vue';
 import Header from '@/components/Scheduler/Appointments/Header.vue';
 import Lists from '@/components/Scheduler/Appointments/Lists.vue';
@@ -35,12 +36,34 @@ export default defineComponent({
   },
   data() {
     return {
-      isOpen: false
+      apiURL: process.env["VUE_APP_URL"],
+      isOpen: false,
+      appointments: []
     }
+  },
+  mounted() {
+    this.repopulateAppointments()
   },
   methods: {
     updateIsOpen(newValue: boolean) {
       this.isOpen = newValue
+    },
+    repopulateAppointments() {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'get',
+          url: this.apiURL + '/appointments'
+      })
+      .then(response => {
+        this.appointments = response.data
+      })
+      .catch(error => {
+          console.log(error);
+      });
     }
   }
 });
