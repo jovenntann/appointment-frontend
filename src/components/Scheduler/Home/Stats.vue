@@ -2,7 +2,7 @@
     <div>
       
     <h3 class="text-lg leading-6 font-medium text-gray-900">
-        Last 30 days
+        Appointments
     </h3>
 
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -50,9 +50,9 @@ export default defineComponent ({
   setup() {
     const state = reactive({
       stats: [
-        { id: 1, name: 'Total Subscribers', stat: '71,897', icon: UsersIcon, change: '122', changeType: 'increase' },
-        { id: 2, name: 'Avg. Open Rate', stat: '58.16%', icon: MailOpenIcon, change: '5.4%', changeType: 'increase' },
-        { id: 3, name: 'Avg. Click Rate', stat: '24.57%', icon: CursorClickIcon, change: '3.2%', changeType: 'decrease' },
+        { id: 1, name: 'Total Appointments', stat: '71,897', icon: UsersIcon, change: '122', changeType: 'increase' },
+        { id: 2, name: 'Accepted', stat: '58.16%', icon: MailOpenIcon, change: '5.4%', changeType: 'increase' },
+        { id: 3, name: 'Rejected', stat: '24.57%', icon: CursorClickIcon, change: '3.2%', changeType: 'decrease' },
       ]
     })
     return {...toRefs(state)}
