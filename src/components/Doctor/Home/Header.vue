@@ -23,12 +23,13 @@
                 <dt class="sr-only">Account status</dt>
                 <dd class="mt-3 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
                   <CheckCircleIcon class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" aria-hidden="true" />
-                  Scheduler
+                  Doctor
                 </dd>
               </dl>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

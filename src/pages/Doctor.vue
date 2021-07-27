@@ -123,7 +123,6 @@ import {
   CalendarIcon,
   HomeIcon,
   MenuAlt2Icon,
-  UsersIcon,
   XIcon,
 } from 'heroicons-vue3/outline'
 import { SearchIcon } from 'heroicons-vue3/solid'
@@ -146,9 +145,8 @@ export default defineComponent ({
   setup() {
     const state = reactive({
       navigation: [
-        { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: true },
-        { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: false },
-        { name: 'Appointments', href: '/admin/appointments', icon: CalendarIcon, current: false },
+        { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
+        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false },
       ],
       sidebarOpen: false,
     })
@@ -156,18 +154,10 @@ export default defineComponent ({
   },
 
   mounted() {
-    if (this.$route.name === "Appointments") {
+    if (this.$route.name === "DoctorAppointments") {
       this.navigation = [
-        { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: false },
-        { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: false },
-        { name: 'Appointments', href: '/admin/appointments', icon: CalendarIcon, current: true },
-      ]
-    }
-    else if (this.$route.name === "Doctors") {
-      this.navigation = [
-        { name: 'Dashboard', href: '/admin/', icon: HomeIcon, current: false },
-        { name: 'Doctors', href: '/admin/doctors', icon: UsersIcon, current: true },
-        { name: 'Appointments', href: '/admin/appointments', icon: CalendarIcon, current: false },
+        { name: 'Dashboard', href: '/', icon: HomeIcon, current: false },
+        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: true },
       ]
     }
   },

@@ -7,6 +7,9 @@ import Home from '../pages/Scheduler/Home.vue'
 import Doctors from '../pages/Scheduler/Doctors.vue'
 import Appointments from '../pages/Scheduler/Appointments.vue'
 
+import Doctor from '../pages/Doctor.vue'
+import DoctorHome from '../pages/Doctor/Home.vue'
+import DoctorAppointments from '../pages/Doctor/Appointments.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Login',
     component: Login
   },
-  // Dashboard (Authenticated)
+  // Scheduler Routes
   {
     path: '/admin/',
     name: 'Home',
@@ -50,6 +53,33 @@ const routes: Array<RouteRecordRaw> = [
         path: '/admin/doctors',
         name: 'Doctors',
         component: Doctors
+      }
+    ]
+  },
+  // Doctor Routes
+  // Dashboard (Scheduler Authenticated)
+  {
+    path: '/',
+    name: 'DoctorHome',
+    component: Doctor,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '/',
+        component: DoctorHome
+      }
+    ]
+  },
+  {
+    path: '/appointments',
+    name: 'DoctorAppointments',
+    component: Doctor,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '/appointments',
+        name: 'DoctorAppointments',
+        component: DoctorAppointments
       }
     ]
   },

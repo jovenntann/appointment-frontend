@@ -84,7 +84,11 @@ export default defineComponent({
       })
       .then(response => {
           localStorage.setItem('AccessToken', JSON.stringify(response.data));
-          this.$router.push('/admin/')
+          if (response.data.user_type_id === 1) {
+            this.$router.push('/admin/')
+          } else if (response.data.user_type_id === 2) {
+            this.$router.push('/')
+          }
       })
       .catch(error => {
           console.log(error);

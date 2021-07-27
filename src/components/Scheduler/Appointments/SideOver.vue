@@ -315,7 +315,7 @@ export default defineComponent({
             patient_last_name: this.lastName,
             scheduled_from: startDateTime,
             scheduled_to: endDateTime,
-            user_id: 1,
+            user_id: this.selected.id,
             comments: this.comments,
             appointment_status_id: 1
           }
