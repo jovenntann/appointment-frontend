@@ -306,6 +306,18 @@ export default defineComponent({
         console.log(response.data)
         this.$emit('parentRepopulateAppointments')
         this.updateParentIsOpen(false)
+        this.selectedDate =  '',
+        this.startTime = '',
+        this.endTime = '',
+        this.firstName = '',
+        this.lastName = '',
+        this.comments = ''
+        this.selected = {
+            id: 0,
+            first_name: 'Select',
+            last_name: '',
+            profile_pic: 'https://icons-for-free.com/iconfiles/png/512/customer+person+profile+user+icon-1320184293316929121.png',
+        }
       })
       .catch(error => {
           console.log(error);

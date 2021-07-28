@@ -61,7 +61,7 @@ export default defineComponent ({
       };
       axios({
           method: 'put',
-          url: this.apiURL + '/appointment/' + appointmentId,
+          url: this.apiURL + '/appointment/status/' + appointmentId,
           data: {
             appointment_status_id: 3
           }

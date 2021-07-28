@@ -335,11 +335,21 @@ export default defineComponent({
         'Access-Control-Allow-Origin': true
       };
       axios({
-          method: 'get',
-          url: this.apiURL + '/appointments'
+          method: 'put',
+          url: this.apiURL + '/appointment/' + this.appointmentId,
+          data: {
+            patient_first_name: this.firstName,
+            patient_last_name: this.lastName,
+            scheduled_from: startDateTime,
+            scheduled_to: endDateTime,
+            user_id: this.selected.id,
+            comments: this.comments,
+            appointment_status_id: 1
+          }
       })
       .then(response => {
-        console.log(response.data)
+        this.$emit('parentRepopulateAppointments')
+        this.updateParentIsEditOpen(false)
       })
       .catch(error => {
           console.log(error);
