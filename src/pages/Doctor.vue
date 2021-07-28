@@ -22,7 +22,7 @@
             </div>
             <div class="mt-5 flex-1 h-0 overflow-y-auto">
               <nav class="px-2 space-y-1">
-                <a v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                <a v-for="item in navigation" :key="item.name"  @click="navigate(item.href)" href="#" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
                   <component :is="item.icon" :class="[item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300', 'mr-4 flex-shrink-0 h-6 w-6']" aria-hidden="true" />
                   {{ item.name }}
                 </a>
@@ -46,7 +46,7 @@
           </div>
           <div class="flex-1 flex flex-col overflow-y-auto">
             <nav class="flex-1 px-2 py-4 bg-gray-800 space-y-1">
-              <a v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+              <a v-for="item in navigation" :key="item.name" @click="navigate(item.href)" href="#" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
                 <component :is="item.icon" :class="[item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300', 'mr-3 flex-shrink-0 h-6 w-6']" aria-hidden="true" />
                 {{ item.name }}
               </a>
@@ -84,13 +84,13 @@
               <div>
                 <MenuButton class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span class="sr-only">Open user menu</span>
-                  <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                  <img class="h-8 w-8 rounded-full" :src="profilePic" alt="" />
                 </MenuButton>
               </div>
               <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                 <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <MenuItem>
-                    <a @click="logout()" class="'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
+                    <a @click="logout()" href="#" class="'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
                   </MenuItem>
                 </MenuItems>
               </transition>
@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue';
+import { defineComponent } from 'vue';
 
 import {
   Dialog,
@@ -128,6 +128,17 @@ import {
 import { SearchIcon } from 'heroicons-vue3/solid'
 
 export default defineComponent ({
+  data () {
+    return {
+      navigation: [
+        { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
+        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false },
+      ],
+      sidebarOpen: false,
+      url: '',
+      profilePic: ''
+    }
+  },
   components: {
     Dialog,
     DialogOverlay,
@@ -142,26 +153,27 @@ export default defineComponent ({
     SearchIcon,
     XIcon,
   },
-  setup() {
-    const state = reactive({
-      navigation: [
-        { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
-        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false },
-      ],
-      sidebarOpen: false,
-    })
-    return {...toRefs(state)}
-  },
-
   mounted() {
-    if (this.$route.name === "DoctorAppointments") {
-      this.navigation = [
-        { name: 'Dashboard', href: '/', icon: HomeIcon, current: false },
-        { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: true },
-      ]
-    }
+    const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+    this.profilePic = accessToken['profile_pic']
   },
   methods: {
+    navigate(url: string) {
+      this.$router.push(url)
+
+      if (url === "/") {
+        this.navigation = [
+          { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
+          { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false }
+        ]
+      }
+      else if (url === "/appointments") {
+        this.navigation = [
+          { name: 'Dashboard', href: '/', icon: HomeIcon, current: false },
+          { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: true },
+        ]
+      }
+    },
     logout() {
       localStorage.removeItem('AccessToken')
       this.$router.push('/login/')

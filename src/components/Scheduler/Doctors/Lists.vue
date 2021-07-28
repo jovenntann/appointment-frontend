@@ -83,7 +83,6 @@ export default defineComponent ({
         url: this.apiURL + '/doctors'
     })
     .then(response => {
-      console.log(response.data)
       this.doctors = response.data
     })
     .catch(error => {

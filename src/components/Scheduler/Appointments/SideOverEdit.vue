@@ -1,6 +1,6 @@
 <template>
-  <TransitionRoot as="template" :show="isOpen">
-    <Dialog as="div" static class="fixed inset-0 overflow-hidden" :open="isOpen">
+  <TransitionRoot as="template" :show="isEditOpen">
+    <Dialog as="div" static class="fixed inset-0 overflow-hidden" :open="isEditOpen">
       <div class="absolute inset-0 overflow-hidden">
         <DialogOverlay class="absolute inset-0" />
 
@@ -14,7 +14,7 @@
                       Panel title
                     </DialogTitle>
                     <div class="ml-3 h-7 flex items-center">
-                      <button class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="updateParentIsOpen(false)">
+                      <button class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="updateParentIsEditOpen(false)">
                         <span class="sr-only">Close panel</span>
                         <XIcon class="h-6 w-6" aria-hidden="true" />
                       </button>
@@ -163,11 +163,11 @@
 
                         <div class="pt-5">
                           <div class="flex justify-end">
-                            <button @click="updateParentIsOpen(false)" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button @click="updateParentIsEditOpen(false)" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                               Cancel
                             </button>
                             <button @click="submitAppointment()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                              Save
+                              Update
                             </button>
                           </div>
                         </div>
@@ -197,7 +197,7 @@ import { CheckIcon, SelectorIcon } from 'heroicons-vue3/solid'
 
 export default defineComponent({
   props: {
-    isOpen: Boolean,
+    isEditOpen: Boolean,
     doctors: [Array, Object]
   },
   data() {
@@ -207,7 +207,7 @@ export default defineComponent({
           id: 0,
           first_name: 'Select',
           last_name: '',
-          profile_pic: 'https://icons-for-free.com/iconfiles/png/512/customer+person+profile+user+icon-1320184293316929121.png',
+          profile_pic: 'https://icons-for-free.com/iconfiles/png/512/customer+person+profile+user+icon-1320184293316929121.png'
       },
       // Date Picker
         disabledDate(time: any) {
@@ -243,7 +243,8 @@ export default defineComponent({
         endTime: '',
         firstName: '',
         lastName: '',
-        comments: ''
+        comments: '',
+        currentAppointment: {}
     }
   },
   components: {
@@ -261,9 +262,49 @@ export default defineComponent({
     CheckIcon,
     SelectorIcon,
   },
+  mounted() {
+
+    axios({
+        method: 'get',
+        url: this.apiURL + '/appointment/1'
+    })
+    .then(response => {
+      console.log(response.data)
+      this.currentAppointment = response.data
+      
+      this.firstName = response.data.Appointment.patient_first_name
+      this.lastName = response.data.Appointment.patient_last_name
+      this.comments = response.data.Appointment.comments
+
+      this.selectedDate = response.data.Appointment.scheduled_to
+
+      var startTimeHours = String(new Date(response.data.Appointment.scheduled_to).getHours())
+      startTimeHours = ("0" + startTimeHours).slice(-2);
+      var startTimeMinutes = String(new Date(response.data.Appointment.scheduled_to).getMinutes())
+      startTimeMinutes = ("0" + startTimeMinutes).slice(-2);
+      this.startTime = String(startTimeHours) + ':' + String(startTimeMinutes)
+
+      var endTimeHours = String(new Date(response.data.Appointment.scheduled_from).getHours())
+      endTimeHours = ("0" + endTimeHours).slice(-2);
+      var endTimeMinutes = String(new Date(response.data.Appointment.scheduled_from).getMinutes())
+      endTimeMinutes = ("0" + endTimeMinutes).slice(-2);
+      this.endTime = String(endTimeHours) + ':' + String(endTimeMinutes)
+
+      this.selected = {
+          id: response.data.User.id,
+          first_name: response.data.User.first_name,
+          last_name: response.data.User.last_name,
+          profile_pic: response.data.User.profile_pic
+      }
+    })
+    .catch(error => {
+        console.log(error);
+    });
+
+  },
   methods: {
-    updateParentIsOpen(newValue: boolean) {
-      this.$emit('parentUpdateIsOpen', newValue)
+    updateParentIsEditOpen(newValue: boolean) {
+      this.$emit('parentUpdateIsEditOpen', newValue)
     },
     submitAppointment() {
 
@@ -290,22 +331,11 @@ export default defineComponent({
         'Access-Control-Allow-Origin': true
       };
       axios({
-          method: 'post',
-          url: this.apiURL + '/appointments',
-          data: {
-            patient_first_name: this.firstName,
-            patient_last_name: this.lastName,
-            scheduled_from: startDateTime,
-            scheduled_to: endDateTime,
-            user_id: this.selected.id,
-            comments: this.comments,
-            appointment_status_id: 1
-          }
+          method: 'get',
+          url: this.apiURL + '/appointments'
       })
       .then(response => {
         console.log(response.data)
-        this.$emit('parentRepopulateAppointments')
-        this.updateParentIsOpen(false)
       })
       .catch(error => {
           console.log(error);
