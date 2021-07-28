@@ -63,20 +63,15 @@
         </button>
         <div class="flex-1 px-4 flex justify-between">
           <div class="flex-1 flex">
-            <!-- <form class="w-full flex md:ml-0" action="#" method="GET">
-              <label for="search-field" class="sr-only">Search</label>
-              <div class="relative w-full text-gray-400 focus-within:text-gray-600">
-                <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                  <SearchIcon class="h-5 w-5" aria-hidden="true" />
-                </div>
-                <input id="search-field" class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm" placeholder="Search" type="search" name="search" />
-              </div>
-            </form> -->
+
           </div>
           <div class="ml-4 flex items-center md:ml-6">
-            <button class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <span class="sr-only">View notifications</span>
-              <BellIcon class="h-6 w-6" aria-hidden="true" />
+              
+            <button v-if="profile.status_id==1" @click="updateStatus(profile.id,2)" type="button" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              Available 
+            </button>
+            <button v-if="profile.status_id==2" @click="updateStatus(profile.id,1)" type="button" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+              Unavailable 
             </button>
 
             <!-- Profile dropdown -->
@@ -106,6 +101,7 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios';
 import { defineComponent } from 'vue';
 
 import {
@@ -130,13 +126,15 @@ import { SearchIcon } from 'heroicons-vue3/solid'
 export default defineComponent ({
   data () {
     return {
+      apiURL: process.env["VUE_APP_URL"],
       navigation: [
         { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
         { name: 'Appointments', href: '/appointments', icon: CalendarIcon, current: false },
       ],
       sidebarOpen: false,
       url: '',
-      profilePic: ''
+      profilePic: '',
+      profile: {}
     }
   },
   components: {
@@ -156,6 +154,7 @@ export default defineComponent ({
   mounted() {
     const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
     this.profilePic = accessToken['profile_pic']
+    this.getProfile()
   },
   methods: {
     navigate(url: string) {
@@ -177,6 +176,42 @@ export default defineComponent ({
     logout() {
       localStorage.removeItem('AccessToken')
       this.$router.push('/login/')
+    },
+    getProfile() {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'get',
+          url: this.apiURL + '/me/'
+      })
+      .then(response => {
+        console.log(response.data)
+        this.profile = response.data
+      })
+      .catch(error => {
+          console.log(error);
+      });
+    },
+    updateStatus(doctorId: string,statusId: string) {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'put',
+          url: this.apiURL + '/user/status/?user_id=' + doctorId + '&status_id=' + statusId
+      })
+      .then(response => {
+        console.log(response.data)
+        this.getProfile()
+      })
+      .catch(error => {
+          console.log(error);
+      });
     }
   }
 })

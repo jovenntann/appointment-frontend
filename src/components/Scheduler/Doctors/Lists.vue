@@ -90,7 +90,6 @@ export default defineComponent ({
       });
     },
     updateStatus(doctorId: string,statusId: string) {
-
       const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
       axios.defaults.headers.common = {
         'Authorization': 'Bearer ' + accessToken.access_token,
@@ -107,9 +106,6 @@ export default defineComponent ({
       .catch(error => {
           console.log(error);
       });
-
-
-      
     }
   }
 })
