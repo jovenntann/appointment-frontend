@@ -1,6 +1,6 @@
 <template >
   <SideOver :is-open="isOpen" :doctors="doctors" @parentUpdateIsOpen="updateIsOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOver>
-  <SideOverEdit :is-edit-open="isEditOpen" :doctors="doctors" @parentUpdateIsEditOpen="updateIsEditOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOverEdit>
+  <SideOverEdit :is-edit-open="isEditOpen" :doctors="doctors" :appointmentId="appointmentId" @parentUpdateIsEditOpen="updateIsEditOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOverEdit>
   <main class="flex-1 relative overflow-y-auto focus:outline-none" >
     <div class="py-6">
       
@@ -11,7 +11,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <!-- Replace with your content -->
         <div class="py-4">
-          <Lists :appointments="appointments" @parentUpdateIsEditOpen="updateIsEditOpen($event)"></Lists>
+          <Lists :appointments="appointments" :appointmentId="appointmentId" @parentUpdateAppointmentId="updateAppointmentId($event)" @parentUpdateIsEditOpen="updateIsEditOpen($event)"></Lists>
         </div>
         <!-- /End replace -->
       </div>
@@ -43,7 +43,8 @@ export default defineComponent({
       isOpen: false,
       isEditOpen: false,
       appointments: [],
-      doctors: []
+      doctors: [],
+      appointmentId: '',
     }
   },
   mounted() {
@@ -56,6 +57,10 @@ export default defineComponent({
     },
     updateIsEditOpen(newValue: boolean) {
       this.isEditOpen = newValue
+    },
+    updateAppointmentId(newValue: any) {
+      this.appointmentId = String(newValue)
+      console.log(this.appointmentId)
     },
     repopulateAppointments() {
       const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');

@@ -55,7 +55,6 @@
                   <i>Not Assigned</i>
                 </td>
 
-
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span v-if="appointment.appointment_status.name == 'Pending'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                     {{ appointment.appointment_status.name }}
@@ -68,10 +67,8 @@
                   </span>
                 </td>
 
-
-
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <a href="#" @click="updateParentIsEditOpen(true)" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                  <a href="#" @click="updateParentIsEditOpen(true);updateAppointmentId(appointment.appointment.id)" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                 </td>
               </tr>
             </tbody>
@@ -88,10 +85,14 @@ import { defineComponent } from 'vue';
 export default defineComponent ({
   props: {
     appointments: [Array, Object],
+    appointmentId: String
   },
   methods: {
     updateParentIsEditOpen(newValue: boolean) {
       this.$emit('parentUpdateIsEditOpen', newValue)
+    },
+    updateAppointmentId(newValue: string) {
+      this.$emit('parentUpdateAppointmentId', newValue)
     }
   }
 

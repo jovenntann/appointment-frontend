@@ -198,6 +198,7 @@ import { CheckIcon, SelectorIcon } from 'heroicons-vue3/solid'
 export default defineComponent({
   props: {
     isEditOpen: Boolean,
+    appointmentId: String,
     doctors: [Array, Object]
   },
   data() {
@@ -243,8 +244,7 @@ export default defineComponent({
         endTime: '',
         firstName: '',
         lastName: '',
-        comments: '',
-        currentAppointment: {}
+        comments: ''
     }
   },
   components: {
@@ -262,49 +262,50 @@ export default defineComponent({
     CheckIcon,
     SelectorIcon,
   },
-  mounted() {
-
-    axios({
-        method: 'get',
-        url: this.apiURL + '/appointment/1'
-    })
-    .then(response => {
-      console.log(response.data)
-      this.currentAppointment = response.data
-      
-      this.firstName = response.data.Appointment.patient_first_name
-      this.lastName = response.data.Appointment.patient_last_name
-      this.comments = response.data.Appointment.comments
-
-      this.selectedDate = response.data.Appointment.scheduled_to
-
-      var startTimeHours = String(new Date(response.data.Appointment.scheduled_to).getHours())
-      startTimeHours = ("0" + startTimeHours).slice(-2);
-      var startTimeMinutes = String(new Date(response.data.Appointment.scheduled_to).getMinutes())
-      startTimeMinutes = ("0" + startTimeMinutes).slice(-2);
-      this.startTime = String(startTimeHours) + ':' + String(startTimeMinutes)
-
-      var endTimeHours = String(new Date(response.data.Appointment.scheduled_from).getHours())
-      endTimeHours = ("0" + endTimeHours).slice(-2);
-      var endTimeMinutes = String(new Date(response.data.Appointment.scheduled_from).getMinutes())
-      endTimeMinutes = ("0" + endTimeMinutes).slice(-2);
-      this.endTime = String(endTimeHours) + ':' + String(endTimeMinutes)
-
-      this.selected = {
-          id: response.data.User.id,
-          first_name: response.data.User.first_name,
-          last_name: response.data.User.last_name,
-          profile_pic: response.data.User.profile_pic
-      }
-    })
-    .catch(error => {
-        console.log(error);
-    });
-
-  },
   methods: {
     updateParentIsEditOpen(newValue: boolean) {
       this.$emit('parentUpdateIsEditOpen', newValue)
+    },
+    getAppointment() {
+
+      axios({
+          method: 'get',
+          url: this.apiURL + '/appointment/' + this.appointmentId
+      })
+      .then(response => {
+
+        this.firstName = response.data.Appointment.patient_first_name
+        this.lastName = response.data.Appointment.patient_last_name
+        this.comments = response.data.Appointment.comments
+
+        this.selectedDate = response.data.Appointment.scheduled_from
+
+        const startTimeRaw = new Date(response.data.Appointment.scheduled_from + '.000Z').toLocaleString('en-US', { timeZone: 'Asia/Manila' })      
+        var startTimeHours = String(new Date(startTimeRaw).getHours())
+        startTimeHours = ("0" + startTimeHours).slice(-2);
+        var startTimeMinutes = String(new Date(startTimeRaw).getMinutes())
+        startTimeMinutes = ("0" + startTimeMinutes).slice(-2);
+        this.startTime = String(startTimeHours) + ':' + String(startTimeMinutes)
+
+        const endTimeRaw = new Date(response.data.Appointment.scheduled_to + '.000Z').toLocaleString('en-US', { timeZone: 'Asia/Manila' })   
+        var endTimeHours = String(new Date(endTimeRaw).getHours())
+        endTimeHours = ("0" + endTimeHours).slice(-2);
+        var endTimeMinutes = String(new Date(endTimeRaw).getMinutes())
+        endTimeMinutes = ("0" + endTimeMinutes).slice(-2);
+        this.endTime = String(endTimeHours) + ':' + String(endTimeMinutes)
+
+        this.selected = {
+            id: response.data.User.id,
+            first_name: response.data.User.first_name,
+            last_name: response.data.User.last_name,
+            profile_pic: response.data.User.profile_pic
+        }
+
+      })
+      .catch(error => {
+          console.log(error);
+      });
+
     },
     submitAppointment() {
 
@@ -342,6 +343,11 @@ export default defineComponent({
       });
     }
   },
+  watch: {
+    appointmentId: function(oldVal,newVal) {
+      this.getAppointment()
+    }
+  }
 })
 </script>
 
