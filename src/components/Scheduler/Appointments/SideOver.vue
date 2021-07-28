@@ -198,7 +198,9 @@ import { CheckIcon, SelectorIcon } from 'heroicons-vue3/solid'
 export default defineComponent({
   props: {
     isOpen: Boolean,
-    doctors: [Array, Object]
+    doctors: [Array, Object],
+    startDate: String,
+    endDate: String
   },
   data() {
     return {
@@ -306,11 +308,11 @@ export default defineComponent({
         console.log(response.data)
         this.$emit('parentRepopulateAppointments')
         this.updateParentIsOpen(false)
-        this.selectedDate =  '',
-        this.startTime = '',
-        this.endTime = '',
-        this.firstName = '',
-        this.lastName = '',
+        this.selectedDate =  ''
+        this.startTime = ''
+        this.endTime = ''
+        this.firstName = ''
+        this.lastName = ''
         this.comments = ''
         this.selected = {
             id: 0,
@@ -322,8 +324,57 @@ export default defineComponent({
       .catch(error => {
           console.log(error);
       });
+    },
+    refreshDoctors() {
+      const selectedDateParsed = new Date(this.selectedDate)
+
+      const splitStartTime = this.startTime.split(':')
+      const startHours = splitStartTime[0]
+      const startMinutes = splitStartTime[1]
+      selectedDateParsed.setHours(parseInt(startHours),parseInt(startMinutes))
+      const startDateTime = selectedDateParsed.toISOString().slice(0, 19).replace('T', ' ');
+
+      const splitendTime = this.endTime.split(':')
+      const endHours = splitendTime[0]
+      const endMinutes = splitendTime[1]
+      selectedDateParsed.setHours(parseInt(endHours),parseInt(endMinutes))
+      const endDateTime = selectedDateParsed.toISOString().slice(0, 19).replace('T', ' ');
+
+      console.log(startDateTime)  
+      console.log(endDateTime)
+
+      this.$emit('parentUpdateStartDate', startDateTime)
+      this.$emit('parentUpdateEndDate', endDateTime)
+      
     }
   },
+  watch: {
+    selectedDate: function(value) {
+      this.startTime = ''
+      this.endTime = ''
+      this.selected = {
+          id: 0,
+          first_name: 'Select',
+          last_name: '',
+          profile_pic: 'https://icons-for-free.com/iconfiles/png/512/customer+person+profile+user+icon-1320184293316929121.png',
+      }
+    },
+
+    startTime: function(value) {
+      this.endTime = ''
+      this.selected = {
+          id: 0,
+          first_name: 'Select',
+          last_name: '',
+          profile_pic: 'https://icons-for-free.com/iconfiles/png/512/customer+person+profile+user+icon-1320184293316929121.png',
+      }
+    },
+    endTime: function(value) {
+      if (value !== '') {
+        this.refreshDoctors()
+      }
+    }
+  }
 })
 </script>
 

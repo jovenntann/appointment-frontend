@@ -37,12 +37,14 @@ import axios from 'axios';
 import { defineComponent } from 'vue';
 import Header from '@/components/Doctor/Appointments/Header.vue';
 import Lists from '@/components/Doctor/Appointments/Lists.vue';
+import { SearchIcon } from 'heroicons-vue3/solid'
 
 export default defineComponent({
   name: 'Appointments',
   components: {
     Header,
     Lists,
+    SearchIcon
   },
   data() {
     return {

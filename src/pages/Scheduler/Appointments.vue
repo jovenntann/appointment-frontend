@@ -1,5 +1,12 @@
 <template >
-  <SideOver :is-open="isOpen" :doctors="doctors" @parentUpdateIsOpen="updateIsOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOver>
+  <SideOver 
+    :is-open="isOpen" 
+    :doctors="doctors"
+    @parentUpdateStartDate="updateStartDate($event)"
+    @parentUpdateEndDate="updateEndDate($event)"
+    @parentUpdateIsOpen="updateIsOpen($event)" 
+    @parentRepopulateAppointments="repopulateAppointments()"
+  ></SideOver>
   <SideOverEdit :is-edit-open="isEditOpen" :doctors="doctors" :appointmentId="appointmentId" @parentUpdateIsEditOpen="updateIsEditOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOverEdit>
   <main class="flex-1 relative overflow-y-auto focus:outline-none" >
     <div class="py-6">
@@ -53,6 +60,7 @@ import Header from '@/components/Scheduler/Appointments/Header.vue';
 import Lists from '@/components/Scheduler/Appointments/Lists.vue';
 import SideOver from '@/components/Scheduler/Appointments/SideOver.vue';
 import SideOverEdit from '@/components/Scheduler/Appointments/SideOverEdit.vue';
+import { SearchIcon } from 'heroicons-vue3/solid'
 
 export default defineComponent({
   name: 'Appointments',
@@ -60,7 +68,8 @@ export default defineComponent({
     Header,
     Lists,
     SideOver,
-    SideOverEdit
+    SideOverEdit,
+    SearchIcon
   },
   data() {
     return {
@@ -72,12 +81,13 @@ export default defineComponent({
       doctors: [],
       appointmentId: '',
       searchText: '',
-      dateRange: ''
+      dateRange: '',
+      startDate: '',
+      endDate: ''
     }
   },
   mounted() {
     this.repopulateAppointments()
-    this.populateDoctors()
   },
   methods: {
     updateIsOpen(newValue: boolean) {
@@ -116,7 +126,7 @@ export default defineComponent({
       };
       axios({
           method: 'get',
-          url: this.apiURL + '/doctors/?status=available'
+          url: this.apiURL + '/doctors/availability/?startDate=' + this.startDate + '&endDate=' + this.endDate
       })
       .then(response => {
         this.doctors = response.data
@@ -164,7 +174,16 @@ export default defineComponent({
           console.log(error);
       });
 
-    }
+    },
+    updateStartDate(value: string) {
+      console.log("updateStartDate")
+      this.startDate = value
+    },
+    updateEndDate(value: string) {
+      console.log("updateEndDate")
+      this.endDate = value
+      this.populateDoctors()
+    },
   }
 });
 </script>
