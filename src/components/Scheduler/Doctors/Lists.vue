@@ -15,9 +15,6 @@
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th scope="col" class="relative px-6 py-3">
-                  <span class="sr-only">Edit</span>
-                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -42,16 +39,14 @@
                   <div class="text-sm text-gray-500">St. Luke Hospital</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span v-if="doctor.status_id == 1" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    Available
-                  </span>
-                  <span v-if="doctor.status_id == 2" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                    Unavailable
-                  </span>
+                  <button v-if="doctor.status_id == 1" @click="updateStatus(doctor.id,'2')" type="button" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Enabled
+                  </button>
+                  <button v-if="doctor.status_id == 2" @click="updateStatus(doctor.id,'1')" type="button" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Disabled
+                  </button>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                </td>
+   
               </tr>
             </tbody>
           </table>
@@ -65,6 +60,7 @@
 import axios from 'axios';
 import { defineComponent } from 'vue';
 
+
 export default defineComponent ({
   data() {
     return {
@@ -73,21 +69,48 @@ export default defineComponent ({
     }
   },
   mounted() {
-    const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
-    axios.defaults.headers.common = {
-      'Authorization': 'Bearer ' + accessToken.access_token,
-      'Access-Control-Allow-Origin': true
-    };
-    axios({
-        method: 'get',
-        url: this.apiURL + '/doctors'
-    })
-    .then(response => {
-      this.doctors = response.data
-    })
-    .catch(error => {
-        console.log(error);
-    });
+    this.getDoctors()
+  },
+  methods: {
+    getDoctors() {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'get',
+          url: this.apiURL + '/doctors'
+      })
+      .then(response => {
+        this.doctors = response.data
+      })
+      .catch(error => {
+          console.log(error);
+      });
+    },
+    updateStatus(doctorId: string,statusId: string) {
+
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'put',
+          url: this.apiURL + '/user/status/?user_id=' + doctorId + '&status_id=' + statusId
+      })
+      .then(response => {
+        console.log(response.data)
+        this.getDoctors()
+      })
+      .catch(error => {
+          console.log(error);
+      });
+
+
+      
+    }
   }
 })
 </script>
