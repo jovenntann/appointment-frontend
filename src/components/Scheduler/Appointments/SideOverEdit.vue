@@ -166,14 +166,15 @@
                             <button @click="updateParentIsEditOpen(false)" type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                               Cancel
                             </button>
-                            <button @click="submitAppointment()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button v-if="appointment_status_id!==3" @click="deleteAppointment()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                              Delete
+                            </button>
+                            <button v-if="appointment_status_id!==3" @click="updateAppointment()" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                               Update
                             </button>
                           </div>
                         </div>
                       </div>
-
-
                     
                   </div>
                   <!-- /End replace -->
@@ -244,7 +245,8 @@ export default defineComponent({
         endTime: '',
         firstName: '',
         lastName: '',
-        comments: ''
+        comments: '',
+        appointment_status_id: ''
     }
   },
   components: {
@@ -277,6 +279,7 @@ export default defineComponent({
         this.firstName = response.data.Appointment.patient_first_name
         this.lastName = response.data.Appointment.patient_last_name
         this.comments = response.data.Appointment.comments
+        this.appointment_status_id = response.data.Appointment.appointment_status_id
 
         this.selectedDate = response.data.Appointment.scheduled_from
 
@@ -307,7 +310,7 @@ export default defineComponent({
       });
 
     },
-    submitAppointment() {
+    updateAppointment() {
 
       const selectedDateParsed = new Date(this.selectedDate)
 
@@ -337,6 +340,25 @@ export default defineComponent({
       })
       .then(response => {
         console.log(response.data)
+      })
+      .catch(error => {
+          console.log(error);
+      });
+    },
+    deleteAppointment() {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'delete',
+          url: this.apiURL + '/appointment/' + this.appointmentId
+      })
+      .then(response => {
+        console.log(response.data)
+        this.$emit('parentRepopulateAppointments')
+        this.updateParentIsEditOpen(false)
       })
       .catch(error => {
           console.log(error);
