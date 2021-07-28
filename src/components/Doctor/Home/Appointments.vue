@@ -69,7 +69,11 @@ export default defineComponent ({
       })
       .then(response => {
         console.log(response.data)
-        this.$emit('parentPopulateAppointmentsPending')
+        if (response.data.message === 'limit') {
+          alert("Sorry you have reached the maximum appointment for that day")
+        } else {
+          this.$emit('parentPopulateAppointmentsPending')
+        }
       })
       .catch(error => {
           console.log(error);

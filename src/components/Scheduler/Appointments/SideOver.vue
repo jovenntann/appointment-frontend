@@ -189,6 +189,7 @@
 
 <script lang="ts">
 import axios from 'axios';
+import moment from 'moment'
 import { defineComponent } from 'vue';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
@@ -346,10 +347,35 @@ export default defineComponent({
       this.$emit('parentUpdateStartDate', startDateTime)
       this.$emit('parentUpdateEndDate', endDateTime)
       
+    },
+    isDateAvailable() {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'get',
+          url: this.apiURL + '/appointment/date/availability/?selectedDate=' + moment(String(this.selectedDate)).format('YYYY-MM-DD')
+      })
+      .then(response => {
+        if (!response.data) {
+          alert("This date is fully booked. Select another date")
+          this.selectedDate = ''
+        }
+      })
+      .catch(error => {
+          console.log(error);
+      });
     }
   },
   watch: {
     selectedDate: function(value) {
+      
+      if (value !== '') {
+        this.isDateAvailable()
+      }
+
       this.startTime = ''
       this.endTime = ''
       this.selected = {
