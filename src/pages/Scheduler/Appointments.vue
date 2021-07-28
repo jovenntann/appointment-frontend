@@ -118,8 +118,9 @@ export default defineComponent({
         var matchedAppointments: any = []
         for (var i in this.appointments) {
           let first_name: string = this.appointments[i]['appointment']['patient_first_name']
-          let last_name: string = this.appointments[i]['appointment']['patient_first_name']
-          if (first_name.toLowerCase().includes(this.searchText.toLowerCase()) || last_name.toLowerCase().includes(this.searchText.toLowerCase())) {
+          let last_name: string = this.appointments[i]['appointment']['patient_last_name']
+          let full_name: string = first_name + ' ' + last_name
+          if (first_name.toLowerCase().includes(this.searchText.toLowerCase()) || last_name.toLowerCase().includes(this.searchText.toLowerCase()) || full_name.toLowerCase().includes(this.searchText.toLowerCase())) {
             matchedAppointments.push(this.appointments[i])
           }
         }
