@@ -116,7 +116,7 @@ export default defineComponent({
       };
       axios({
           method: 'get',
-          url: this.apiURL + '/doctors'
+          url: this.apiURL + '/doctors/?status=available'
       })
       .then(response => {
         this.doctors = response.data

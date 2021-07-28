@@ -17,15 +17,9 @@
             <p class="text-2xl font-semibold text-gray-900">
             {{ item.stat }}
             </p>
-            <p :class="[item.changeType === 'increase' ? 'text-green-600' : 'text-red-600', 'ml-2 flex items-baseline text-sm font-semibold']">
-            <ArrowSmUpIcon v-if="item.changeType === 'increase'" class="self-center flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
-            <ArrowSmDownIcon v-else class="self-center flex-shrink-0 h-5 w-5 text-red-500" aria-hidden="true" />
-            <span class="sr-only"> {{ item.changeType === 'increase' ? 'Increased' : 'Decreased' }} by </span>
-            {{ item.change }}
-            </p>
             <div class="absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6">
             <div class="text-sm">
-                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="#" class="font-medium text-indrigo-600 hover:text-indigo-500">
                 View all<span class="sr-only"> {{ item.name }} stats</span></a
                 >
             </div>
@@ -50,9 +44,9 @@ export default defineComponent ({
   setup() {
     const state = reactive({
       stats: [
-        { id: 1, name: 'Total Appointments', stat: '71,897', icon: UsersIcon, change: '122', changeType: 'increase' },
-        { id: 2, name: 'Accepted', stat: '58.16%', icon: MailOpenIcon, change: '5.4%', changeType: 'increase' },
-        { id: 3, name: 'Rejected', stat: '24.57%', icon: CursorClickIcon, change: '3.2%', changeType: 'decrease' },
+        { id: 1, name: 'Approved', stat: '20', icon: UsersIcon, change: '', changeType: '' },
+        { id: 2, name: 'Pending', stat: '5', icon: MailOpenIcon, change: '', changeType: '' },
+        { id: 3, name: 'Rejected', stat: '10', icon: CursorClickIcon, change: '', changeType: '' },
       ]
     })
     return {...toRefs(state)}

@@ -7,7 +7,7 @@
             <h3 class="text-gray-900 text-sm font-medium truncate">{{ appointment.appointment.patient_first_name }} {{ appointment.appointment.patient_last_name }}</h3>
             <span class="flex-shrink-0 inline-block px-2 py-0.5 text-yellow-800 text-xs font-medium bg-yellow-100 rounded-full">{{ appointment.appointment_status.name }}</span>
           </div>
-          <p class="mt-1 text-gray-500 text-sm truncate">Today 03:00 - 03:00 PM</p>
+          <p class="mt-1 text-gray-500 text-sm truncate">{{ formatDate(appointment.appointment.scheduled_from) }} {{ formatTime(appointment.appointment.scheduled_from) }} - {{formatTime(appointment.appointment.scheduled_to)}}</p>
           <p class="mt-1 text-gray-500 text-sm truncate">{{ appointment.appointment.comments }}</p>
         </div>
       </div>
@@ -33,6 +33,7 @@
 
 <script lang="ts">
 import axios from 'axios';
+import moment from 'moment'
 import { defineComponent } from 'vue';
 import { CheckIcon, XIcon } from  'heroicons-vue3/solid'
 
@@ -82,7 +83,7 @@ export default defineComponent ({
       };
       axios({
           method: 'put',
-          url: this.apiURL + '/appointment/' + appointmentId,
+          url: this.apiURL + '/appointment/status/' + appointmentId,
           data: {
             appointment_status_id: 2
           }
@@ -94,6 +95,21 @@ export default defineComponent ({
       .catch(error => {
           console.log(error);
       });
+    },
+    formatDate(value: string) {
+      if (value) {
+        const convertedDate =  new Date(value + '.000Z').toLocaleString('en-US', { timeZone: 'Asia/Manila' }) 
+        return moment(String(convertedDate)).endOf('day').fromNow();
+      }
+    },
+    formatTime(value: string) {
+      if (value) {
+        const convertedDate =  new Date(value + '.000Z').toLocaleString('en-US', { timeZone: 'Asia/Manila' }) 
+        return moment(String(convertedDate)).format('h:mm a')
+      }
+    },
+    limitComments(value: string) {
+      return value.substring(0, 20) + '..'
     }
   }
 })

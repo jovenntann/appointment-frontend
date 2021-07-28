@@ -40,10 +40,10 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <button v-if="doctor.status_id == 1" @click="updateStatus(doctor.id,'2')" type="button" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    Enabled
+                    Available
                   </button>
                   <button v-if="doctor.status_id == 2" @click="updateStatus(doctor.id,'1')" type="button" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    Disabled
+                    Unavailable
                   </button>
                 </td>
    
@@ -80,7 +80,7 @@ export default defineComponent ({
       };
       axios({
           method: 'get',
-          url: this.apiURL + '/doctors'
+          url: this.apiURL + '/doctors/?status=all'
       })
       .then(response => {
         this.doctors = response.data

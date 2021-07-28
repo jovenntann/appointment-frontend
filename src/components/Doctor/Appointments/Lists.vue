@@ -41,11 +41,11 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">July 26, 2021</div>
-                  <div class="text-sm text-gray-500">03:00pm - 03:30pm</div>
+                  <div class="text-sm text-gray-900">{{ formatDate(appointment.appointment.scheduled_from) }}</div>
+                  <div class="text-sm text-gray-500">{{ formatTime(appointment.appointment.scheduled_from) }} - {{formatTime(appointment.appointment.scheduled_to)}}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ appointment.appointment.comments }}
+                  {{ limitComments(appointment.appointment.comments) }}
                 </td>
 
                 <td v-if="appointment.user" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -83,12 +83,30 @@
 </template>
 
 <script lang="ts">
+import moment from 'moment'
 import { defineComponent } from 'vue';
 
 export default defineComponent ({
   props: {
     appointments: [Array, Object],
   },
+  methods: {
+    formatDate(value: string) {
+      if (value) {
+        const convertedDate =  new Date(value + '.000Z').toLocaleString('en-US', { timeZone: 'Asia/Manila' }) 
+        return moment(String(convertedDate)).format('MMMM Do YYYY')
+      }
+    },
+    formatTime(value: string) {
+      if (value) {
+        const convertedDate =  new Date(value + '.000Z').toLocaleString('en-US', { timeZone: 'Asia/Manila' }) 
+        return moment(String(convertedDate)).format('h:mm a')
+      }
+    },
+    limitComments(value: string) {
+      return value.substring(0, 20) + '..'
+    }
+  }
 })
 
 
