@@ -5,16 +5,28 @@
     <div class="py-6">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <h1 class="text-2xl font-semibold text-gray-900">Appointments</h1>
-            <div class="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
-              <div class="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
+            <div class="flex space-x-6 mt-4">
+              <div class="flex-1">
                 <div class="w-full">
                   <label for="search" class="sr-only">Search</label>
                   <div class="relative">
                     <div class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
                       <SearchIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </div>
-                    <input id="search" @input="filterAppointments()" v-model="searchText" name="search" class="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm" placeholder="Search" type="search" />
+                    <input id="search" @input="filterAppointments()" v-model="searchText" name="search" class="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm" placeholder="Search by name" type="search" />
                   </div>
+                </div>
+              </div>
+              <div class="flex-2">
+                <div class="w-full">
+                <el-date-picker
+                  v-model="dateRange"
+                  type="daterange"
+                  range-separator="-"
+                  start-placeholder="Start date"
+                  end-placeholder="End date"
+                  @change="filterDateRange()">
+                </el-date-picker>
                 </div>
               </div>
             </div>
@@ -34,6 +46,7 @@
 </template>
 
 <script lang="ts">
+import moment from 'moment'
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import Header from '@/components/Scheduler/Appointments/Header.vue';
@@ -58,7 +71,8 @@ export default defineComponent({
       filteredAppointments: [],
       doctors: [],
       appointmentId: '',
-      searchText: ''
+      searchText: '',
+      dateRange: ''
     }
   },
   mounted() {
@@ -126,6 +140,30 @@ export default defineComponent({
         }
         this.filteredAppointments = matchedAppointments
       }
+    },
+    filterDateRange() {
+
+      var startDate = moment(String(this.dateRange[0])).format('YYYY-MM-DD')
+      var endDate = moment(String(this.dateRange[1])).format('YYYY-MM-DD')
+      
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'get',
+          url: this.apiURL + '/appointments/filter/?startDate=' + startDate + '&' + 'endDate=' +  endDate
+      })
+      .then(response => {
+        this.appointments = response.data
+        this.filteredAppointments = response.data
+        this.searchText = ""
+      })
+      .catch(error => {
+          console.log(error);
+      });
+
     }
   }
 });
