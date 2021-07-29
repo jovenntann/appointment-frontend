@@ -7,7 +7,15 @@
     @parentUpdateIsOpen="updateIsOpen($event)" 
     @parentRepopulateAppointments="repopulateAppointments()"
   ></SideOver>
-  <SideOverEdit :is-edit-open="isEditOpen" :doctors="doctors" :appointmentId="appointmentId" @parentUpdateIsEditOpen="updateIsEditOpen($event)" @parentRepopulateAppointments="repopulateAppointments()"></SideOverEdit>
+  <SideOverEdit 
+  :is-edit-open="isEditOpen" 
+  :doctors="doctors" 
+  :appointmentId="appointmentId" 
+  @parentUpdateStartDate="updateStartDate($event)"
+  @parentUpdateEndDate="updateEndDate($event)"
+  @parentUpdateIsEditOpen="updateIsEditOpen($event)" 
+  @parentRepopulateAppointments="repopulateAppointments()"
+  ></SideOverEdit>
   <main class="flex-1 relative overflow-y-auto focus:outline-none" >
     <div class="py-6">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
