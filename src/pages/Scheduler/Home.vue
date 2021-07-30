@@ -15,16 +15,46 @@
 </template>
 
 <script lang="ts">
-
+import axios from 'axios';
 import { defineComponent } from 'vue';
 import Stats from '@/components/Scheduler/Home/Stats.vue';
 import Header from '@/components/Scheduler/Home/Header.vue';
+
 export default defineComponent({
   name: 'Home',
   components: {
     Stats,
     Header
   },
+  data() {
+    return {
+      apiURL: process.env["VUE_APP_URL"],
+      stats: {}
+    }
+  },
+  mounted() {
+    this.getAppointmentStats()
+  },
+  methods: {
+    getAppointmentStats() {
+      const accessToken = JSON.parse(localStorage.getItem("AccessToken") || '{}');
+      axios.defaults.headers.common = {
+        'Authorization': 'Bearer ' + accessToken.access_token,
+        'Access-Control-Allow-Origin': true
+      };
+      axios({
+          method: 'get',
+          url: this.apiURL + '/appointment/stats'
+      })
+      .then(response => {
+        console.log(response.data)
+        this.stats = response.data
+      })
+      .catch(error => {
+          console.log(error);
+      });
+    }
+  }
 });
 </script>
 
